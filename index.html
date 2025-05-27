@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Birthday Surprise</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #79B791;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #fff;
+      flex-direction: column;
+    }
+
+    .container {
+      text-align: center;
+      background:#5C8D7B;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      width: 80%;
+      max-width: 500px;
+      backdrop-filter: blur(8px);
+      display: block;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 1.8em;
+    }
+
+    p {
+      font-style: italic;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      width: 60%;
+      text-align: center;
+      outline: none;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background-color: #fff;
+      color: #79B791;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #f0f0f0;
+      transform: scale(1.05);
+    }
+
+    .message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .unlocked {
+      animation: fadeIn 1s ease-in-out forwards;
+      display: none;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Surprise page styles (hidden initially) */
+    #surprisePage {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      background: #79B791;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #surprisePage h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
+      text-shadow: 0 0 10px #fff;
+    }
+
+    #surprisePage p {
+      font-size: 1.3em;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+
+    .confetti {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 9999;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #fff;
+      opacity: 0.7;
+      border-radius: 3px;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+      transform-origin: center;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    #blackScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  z-index: 10000;
+  display: none;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="container" id="riddle-container">
+    <h1>🎁 Here's a surprise for you!</h1>
+    <p style="font-size: 16px; font-weight: normal; margin-top: 5px; color: #e0e0e0;">
+      (But first, a little challenge to unlock it 😉)
+    </p>
+
+    <p>
+      I come every year, full of cheer. <br>
+      Balloons, cake, and love appear. <br>
+      You are the queen, it’s your day, <br>
+      So tell me quick—what’s the word I say? <br>
+      <strong>(Hint: 8 letters)</strong>
+    </p>
+    <input type="text" id="answerInput" placeholder="Enter your answer" />
+    <br />
+    <button onclick="checkAnswer()">Unlock</button>
+    <div class="message" id="messageBox"></div>
+  </div>
+
+  <div class="unlocked" id="unlockedMessage" style="display:none; margin-top: 20px;">
+    <h1>✨ Correct! Let the magic begin... 🎂</h1>
+    <p>Loading your surprise...</p>
+  </div>
+
+  <div id="surprisePage" style="display:none; flex;">
+    <h1>✨ Happy Birthday, Srishti! 👑🎂</h1>
+    <p>May your day be filled with love, laughter, and endless magic! ✨💖</p>
+    <div class="confetti" id="confetti"></div>
+  </div>
+  <div id="blackScreen"></div>
+
+
+  <script>
+    function checkAnswer() {
+      const input = document.getElementById('answerInput').value.trim().toLowerCase();
+      const messageBox = document.getElementById('messageBox');
+      const riddleContainer = document.getElementById('riddle-container');
+      const unlockedMessage = document.getElementById('unlockedMessage');
+
+      if (input === 'birthday') {
+        messageBox.style.color = '#d4ffcc';
+        messageBox.innerText = 'Correct answer! 🎉';
+
+        setTimeout(() => {
+          riddleContainer.style.display = 'none';
+          unlockedMessage.style.display = 'block';
+
+          setTimeout(() => {
+            unlockedMessage.style.display = 'none';
+            showSurprise();
+          }, 3000);
+
+        }, 1000);
+      } else {
+        messageBox.style.color = '#ffe0e0';
+        messageBox.innerText = 'Oops! Try again 😊';
+      }
+    }
+
+    function showSurprise() {
+      const surprisePage = document.getElementById('surprisePage');
+      surprisePage.style.display = 'flex';
+
+      // Start confetti animation
+      const confettiContainer = document.getElementById('confetti');
+      const colors = ['#f44336', '#e91e63', '#9c27b0', '#2196f3', '#00bcd4', '#4caf50', '#ffeb3b', '#ff9800'];
+
+      function createConfettiPiece() {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti-piece');
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        const size = (Math.random() * 8 + 7);
+        confetti.style.width = size + 'px';
+        confetti.style.height = size + 'px';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.top = '-20px';
+        confetti.style.opacity = 1;
+
+        confettiContainer.appendChild(confetti);
+
+        confetti.addEventListener('animationend', () => {
+          confetti.remove();
+        });
+      }
+
+      for (let i = 0; i < 300; i++) {
+        setTimeout(createConfettiPiece, i * 15);
+      }
+      // Show black screen after confetti ends
+setTimeout(() => {
+  const blackScreen = document.getElementById('blackScreen');
+  blackScreen.style.display = 'block';
+  setTimeout(() => {
+    blackScreen.style.opacity = 1;
+    setTimeout(() => {
+      window.location.href = 'birthday-cake.html'; // 👈 Replace with your actual file name
+    }, 1000);
+  }, 100); // short delay to trigger transition
+}, 9000); // Adjust this based on your confetti duration
+
+    }
+  </script>
+
+</body>
+</html>
