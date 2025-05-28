@@ -2,158 +2,272 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Birthday Animation with Multi-line Typewriter</title>
+  <title>Birthday Surprise</title>
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-    }
-    body, html {
-      height: 100vh; width: 100vw;
-      overflow: hidden;
-      font-family: 'Courier New', monospace;
-      background: black;
-      position: relative;
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #79B791;
+      height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #fff;
       flex-direction: column;
     }
-    #bgImage {
+
+    .container {
+      text-align: center;
+      background:#5C8D7B;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      width: 80%;
+      max-width: 500px;
+      backdrop-filter: blur(8px);
+      display: block;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 1.8em;
+    }
+
+    p {
+      font-style: italic;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      width: 60%;
+      text-align: center;
+      outline: none;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background-color: #fff;
+      color: #79B791;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #f0f0f0;
+      transform: scale(1.05);
+    }
+
+    .message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .unlocked {
+      animation: fadeIn 1s ease-in-out forwards;
+      display: none;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Surprise page styles (hidden initially) */
+    #surprisePage {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      background: #79B791;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #surprisePage h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
+      text-shadow: 0 0 10px #fff;
+    }
+
+    #surprisePage p {
+      font-size: 1.3em;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+
+    .confetti {
       position: fixed;
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      object-fit: cover;
-      border-radius: 15px;
-      transition: opacity 1s ease;
-      opacity: 1;
-      z-index: 0;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 9999;
     }
-    /* Text container top right */
-    #typewriter {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      max-width: 35vw;
-      min-height: 6rem;
-      padding: 20px 30px;
-      font-size: 1.6rem;
-      color: white;
-      background-color: rgba(0, 0, 0, 0.4);
-      border-radius: 15px;
-      white-space: pre-line; /* To interpret \n for line breaks */
-      user-select: none;
-      border-right: 2px solid white;
-      overflow-wrap: break-word;
-      z-index: 10;
-      transition: opacity 0.8s ease;
-      opacity: 1;
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #fff;
+      opacity: 0.7;
+      border-radius: 3px;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+      transform-origin: center;
     }
-    @media (max-width: 768px) {
-      #typewriter {
-        font-size: 1.2rem;
-        max-width: 80vw;
-        padding: 15px 20px;
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
       }
     }
-    /* Blinking cursor */
-    #typewriter.blink-cursor::after {
-      content: '_';
-      animation: blink 0.7s infinite;
-      font-weight: bold;
-      margin-left: 5px;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 0; }
-      50% { opacity: 1; }
-    }
+    #blackScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  z-index: 10000;
+  display: none;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
   </style>
 </head>
 <body>
 
-  <img id="bgImage" src="f1.png" alt="Background Image" />
+  <div class="container" id="riddle-container">
+    <h1>🎁 Here's a surprise for you!</h1>
+    <p style="font-size: 16px; font-weight: normal; margin-top: 5px; color: #e0e0e0;">
+      (But first, a little challenge to unlock it 😉)
+    </p>
 
-  <div id="typewriter" class="blink-cursor"></div>
+    <p>
+      I come every year, full of cheer. <br>
+      Balloons, cake, and love appear. <br>
+      You are the queen, it’s your day, <br>
+      So tell me quick—what’s the word I say? <br>
+      <strong>(Hint: 8 letters)</strong>
+    </p>
+    <input type="text" id="answerInput" placeholder="Enter your answer" />
+    <br />
+    <button onclick="checkAnswer()">Unlock</button>
+    <div class="message" id="messageBox"></div>
+  </div>
+
+  <div class="unlocked" id="unlockedMessage" style="display:none; margin-top: 20px;">
+    <h1>✨ Correct! Let the magic begin... 🎂</h1>
+    <p>Loading your surprise...</p>
+  </div>
+
+  <div id="surprisePage" style="display:none; flex;">
+    <h1>✨ Happy Birthday, Srishti! 👑🎂</h1>
+    <p>May your day be filled with love, laughter, and endless magic! ✨💖</p>
+    <div class="confetti" id="confetti"></div>
+  </div>
+  <div id="blackScreen"></div>
+
 
   <script>
-    // Array of multi-line texts, each entry corresponds to one image.
-    // Use \n for line breaks.
-    const lines = [
-      `Hey you, yes you... 🎯\nThis one's not just a birthday message... \nit's a little note for the person who makes ordinary days feel less ordinary.✨🎈`,
-      `If you were a flower,\nyou wouldn't be the loudest in the garden- \nbut the one people would pause to look at and admire,\ncause there's something about you that leaves people amazed 🌼🪻🌿`,
-      `You were there for me\nlike a soft cloud, on a hectic day\ncalm and quite,\nand somehow....\nmaking everything feel a little lighter\njustby be️i️ng there. ☁️🌤️`,
-      `Days were tough\nbut having you by my side\nmakes them easier..\nIt's good to know someone's there\nno matter what. 🌄`,
-      `You're like the brightest star in the sky-\nsteady and sure\nshowing me the way when I'm feeling lost.✨`,
-      `You're like the open sky-\nlimitless and curious,\nwith more to know about you.🌌`,
-          ];
+    function checkAnswer() {
+      const input = document.getElementById('answerInput').value.trim().toLowerCase();
+      const messageBox = document.getElementById('messageBox');
+      const riddleContainer = document.getElementById('riddle-container');
+      const unlockedMessage = document.getElementById('unlockedMessage');
 
-    // Background images array
-    const images = [
-      "f1.png",
-      "f2.png",
-      "f3.png",
-      "f4.png",
-      "f5.jpg",
-      "f6.png"
-    ];
+      if (input === 'birthday') {
+        messageBox.style.color = '#d4ffcc';
+        messageBox.innerText = 'Correct answer! 🎉';
 
-    const el = document.getElementById("typewriter");
-    const imgEl = document.getElementById("bgImage");
+        setTimeout(() => {
+          riddleContainer.style.display = 'none';
+          unlockedMessage.style.display = 'block';
 
-    let currentIndex = 0;
-    let currentCharIndex = 0;
-    let deleting = false;
-    const typingSpeed = 70;
-    const deletingSpeed = 40;
-    const pauseAfterTyping = 1500;
-    const pauseAfterDeleting = 600;
-
-    // Fade out current image, then switch source and fade in
-    function fadeToImage(newSrc) {
-      imgEl.style.opacity = 0;
-      setTimeout(() => {
-        imgEl.src = newSrc;
-        imgEl.style.opacity = 1;
-      }, 1000);
-    }
-
-    function typeText() {
-      const currentText = lines[currentIndex];
-      
-      if (!deleting) {
-        // Typing
-        el.textContent = currentText.slice(0, currentCharIndex + 1);
-        currentCharIndex++;
-        if (currentCharIndex === currentText.length) {
-          // Done typing, pause then start deleting
           setTimeout(() => {
-            deleting = true;
-           setTimeout(typeText, deletingSpeed); // slight delay before starting deletion
-  }, 5000);
-          return;
-        }
+            unlockedMessage.style.display = 'none';
+            showSurprise();
+          }, 3000);
+
+        }, 1000);
       } else {
-        // Deleting
-        el.textContent = currentText.slice(0, currentCharIndex - 1);
-        currentCharIndex--;
-        if (currentCharIndex === 0) {
-          deleting = false;
-          currentIndex++;
-          if (currentIndex >= lines.length) {
-           window.location.href = 'birthday-cake.html';
-  return; 
-          }
-          fadeToImage(images[currentIndex]);
-          setTimeout(typeText, pauseAfterDeleting);
-          return;
-        }
+        messageBox.style.color = '#ffe0e0';
+        messageBox.innerText = 'Oops! Try again 😊';
       }
-      setTimeout(typeText, deleting ? deletingSpeed : typingSpeed);
     }
 
-    // Start with first image and text
-    imgEl.src = images[currentIndex];
-    typeText();
+    function showSurprise() {
+      const surprisePage = document.getElementById('surprisePage');
+      surprisePage.style.display = 'flex';
+
+      // Start confetti animation
+      const confettiContainer = document.getElementById('confetti');
+      const colors = ['#f44336', '#e91e63', '#9c27b0', '#2196f3', '#00bcd4', '#4caf50', '#ffeb3b', '#ff9800'];
+
+      function createConfettiPiece() {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti-piece');
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        const size = (Math.random() * 8 + 7);
+        confetti.style.width = size + 'px';
+        confetti.style.height = size + 'px';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.top = '-20px';
+        confetti.style.opacity = 1;
+
+        confettiContainer.appendChild(confetti);
+
+        confetti.addEventListener('animationend', () => {
+          confetti.remove();
+        });
+      }
+
+      for (let i = 0; i < 300; i++) {
+        setTimeout(createConfettiPiece, i * 15);
+      }
+      // Show black screen after confetti ends
+setTimeout(() => {
+  const blackScreen = document.getElementById('blackScreen');
+  blackScreen.style.display = 'block';
+  setTimeout(() => {
+    blackScreen.style.opacity = 1;
+    setTimeout(() => {
+      window.location.href = 'background.html'; // 👈 Replace with your actual file name
+    }, 1000);
+    
+  }, 100); // short delay to trigger transition
+}, 9000); // Adjust this based on your confetti duration
+
+    }
   </script>
 
 </body>
