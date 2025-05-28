@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Birthday Animation with Multi-line Typewriter</title>
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body, html {
+      height: 100vh; width: 100vw;
+      overflow: hidden;
+      font-family: 'Courier New', monospace;
+      background: black;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    #bgImage {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      border-radius: 15px;
+      transition: opacity 1s ease;
+      opacity: 1;
+      z-index: 0;
+    }
+    /* Text container top right */
+    #typewriter {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 35vw;
+      min-height: 6rem;
+      padding: 20px 30px;
+      font-size: 1.6rem;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 15px;
+      white-space: pre-line; /* To interpret \n for line breaks */
+      user-select: none;
+      border-right: 2px solid white;
+      overflow-wrap: break-word;
+      z-index: 10;
+      transition: opacity 0.8s ease;
+      opacity: 1;
+    }
+    @media (max-width: 768px) {
+      #typewriter {
+        font-size: 1.2rem;
+        max-width: 80vw;
+        padding: 15px 20px;
+      }
+    }
+    /* Blinking cursor */
+    #typewriter.blink-cursor::after {
+      content: '_';
+      animation: blink 0.7s infinite;
+      font-weight: bold;
+      margin-left: 5px;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <img id="bgImage" src="f1.png" alt="Background Image" />
+
+  <div id="typewriter" class="blink-cursor"></div>
+
+  <script>
+    // Array of multi-line texts, each entry corresponds to one image.
+    // Use \n for line breaks.
+    const lines = [
+      `Hey you, yes you... 🎯\nThis one's not just a birthday message... \nit's a little note for the person who makes ordinary days feel less ordinary.✨🎈`,
+      `If you were a flower,\nyou wouldn't be the loudest in the garden- \nbut the one people would pause to look at and admire,\ncause there's something about you that leaves people amazed 🌼🪻🌿`,
+      `You were there for me\nlike a soft cloud, on a hectic day\ncalm and quite,\nand somehow....\nmaking everything feel a little lighter\njustby be️i️ng there. ☁️🌤️`,
+      `Days were tough\nbut having you by my side\nmakes them easier..\nIt's good to know someone's there\nno matter what. 🌄`,
+      `You're like the brightest star in the sky-\nsteady and sure\nshowing me the way when I'm feeling lost.✨`,
+      `You're like the open sky-\nlimitless and curious,\nwith more to know about you.🌌`,
+          ];
+
+    // Background images array
+    const images = [
+      "f1.png",
+      "f2.png",
+      "f3.png",
+      "f4.png",
+      "f5.jpg",
+      "f6.png"
+    ];
+
+    const el = document.getElementById("typewriter");
+    const imgEl = document.getElementById("bgImage");
+
+    let currentIndex = 0;
+    let currentCharIndex = 0;
+    let deleting = false;
+    const typingSpeed = 70;
+    const deletingSpeed = 40;
+    const pauseAfterTyping = 1500;
+    const pauseAfterDeleting = 600;
+
+    // Fade out current image, then switch source and fade in
+    function fadeToImage(newSrc) {
+      imgEl.style.opacity = 0;
+      setTimeout(() => {
+        imgEl.src = newSrc;
+        imgEl.style.opacity = 1;
+      }, 1000);
+    }
+
+    function typeText() {
+      const currentText = lines[currentIndex];
+      
+      if (!deleting) {
+        // Typing
+        el.textContent = currentText.slice(0, currentCharIndex + 1);
+        currentCharIndex++;
+        if (currentCharIndex === currentText.length) {
+          // Done typing, pause then start deleting
+          setTimeout(() => {
+            deleting = true;
+           setTimeout(typeText, deletingSpeed); // slight delay before starting deletion
+  }, 5000);
+          return;
+        }
+      } else {
+        // Deleting
+        el.textContent = currentText.slice(0, currentCharIndex - 1);
+        currentCharIndex--;
+        if (currentCharIndex === 0) {
+          deleting = false;
+          currentIndex++;
+          if (currentIndex >= lines.length) {
+           window.location.href = 'birthday-cake.html';
+  return; 
+          }
+          fadeToImage(images[currentIndex]);
+          setTimeout(typeText, pauseAfterDeleting);
+          return;
+        }
+      }
+      setTimeout(typeText, deleting ? deletingSpeed : typingSpeed);
+    }
+
+    // Start with first image and text
+    imgEl.src = images[currentIndex];
+    typeText();
+  </script>
+
+</body>
+</html>
